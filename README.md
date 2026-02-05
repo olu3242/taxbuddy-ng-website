@@ -1,801 +1,380 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaxBuddy NG - Tax Compliance Made Simple for Nigerians</title>
-    <meta name="description" content="Track deadlines, manage documents, and calculate taxes — all in one app designed for Nigerian individuals and SMEs.">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🧮</text></svg>">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <style>
-        :root {
-            --color-purple-900: #4C1D95;
-            --color-purple-700: #7C3AED;
-            --color-purple-600: #8B5CF6;
-            --color-purple-500: #A78BFA;
-            --color-purple-100: #E9D5FF;
-            --color-purple-50: #FAF5FF;
-            
-            --color-gray-900: #0F172A;
-            --color-gray-700: #334155;
-            --color-gray-500: #64748B;
-            --color-gray-300: #CBD5E1;
-            --color-gray-100: #F1F5F9;
-            --color-gray-50: #F8FAFC;
-            
-            --color-emerald-600: #059669;
-            --color-success: #10B981;
-            --color-warning: #F59E0B;
-            
-            --font-heading: 'Plus Jakarta Sans', sans-serif;
-            --font-body: 'Inter', sans-serif;
-            
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: var(--font-body);
-            font-size: 16px;
-            line-height: 1.6;
-            color: var(--color-gray-900);
-            background: white;
-            -webkit-font-smoothing: antialiased;
-        }
-        
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-        
-        h1, h2, h3, h4 {
-            font-family: var(--font-heading);
-            font-weight: 700;
-            line-height: 1.2;
-        }
-        
-        /* Header */
-        .header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--color-gray-100);
-            z-index: 100;
-        }
-        
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 4rem;
-        }
-        
-        .logo {
-            font-family: var(--font-heading);
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--color-gray-900);
-            text-decoration: none;
-        }
-        
-        .nav {
-            display: none;
-            gap: 2rem;
-        }
-        
-        @media (min-width: 768px) {
-            .nav {
-                display: flex;
-            }
-        }
-        
-        .nav a {
-            color: var(--color-gray-700);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-        
-        .nav a:hover {
-            color: #8B5CF6;
-        }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            border-radius: 0.75rem;
-            text-decoration: none;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        
-        .btn-primary {
-            background: #8B5CF6;
-            color: white;
-            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
-        }
-        
-        .btn-primary:hover {
-            background: #7C3AED;
-            transform: translateY(-1px);
-        }
-        
-        .btn-secondary {
-            background: white;
-            color: #8B5CF6;
-            border: 2px solid #8B5CF6;
-        }
-        
-        .btn-secondary:hover {
-            background: #FAF5FF;
-        }
-        
-        .btn-ghost {
-            background: transparent;
-            color: var(--color-gray-700);
-            border: 1px solid var(--color-gray-300);
-        }
-        
-        /* Hero */
-        .hero {
-            padding: 8rem 0 5rem;
-            text-align: center;
-            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
-            color: white;
-        }
-        
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
-            margin-bottom: 1.5rem;
-            color: white;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
-            color: #F3E8FF;
-            max-width: 42rem;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .hero-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        /* Waitlist Section */
-        .waitlist-section {
-            padding: 5rem 0;
-            background: var(--color-gray-50);
-        }
-        
-        .waitlist-card {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 3rem 2rem;
-            border-radius: 1rem;
-            box-shadow: var(--shadow-lg);
-            text-align: center;
-        }
-        
-        .waitlist-card h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        
-        .waitlist-card p {
-            color: var(--color-gray-600);
-            margin-bottom: 2rem;
-        }
-        
-        .email-form {
-            display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-        
-        .email-input {
-            flex: 1;
-            padding: 1rem 1.5rem;
-            border: 2px solid var(--color-gray-300);
-            border-radius: 0.75rem;
-            font-size: 1rem;
-        }
-        
-        .checkbox-label {
-            display: flex;
-            align-items: start;
-            gap: 0.5rem;
-            text-align: left;
-            font-size: 0.875rem;
-            color: var(--color-gray-700);
-            margin-bottom: 1rem;
-        }
-        
-        .privacy-note {
-            font-size: 0.75rem;
-            color: var(--color-gray-500);
-            text-align: left;
-        }
-        
-        /* How It Works */
-        .how-it-works {
-            padding: 5rem 0;
-            background: white;
-        }
-        
-        .section-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-        
-        .section-header h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .section-header p {
-            font-size: 1.125rem;
-            color: var(--color-gray-600);
-        }
-        
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-        
-        .step-card {
-            text-align: center;
-            padding: 2rem;
-        }
-        
-        .step-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 3rem;
-            height: 3rem;
-            background: #FAF5FF;
-            color: #8B5CF6;
-            border-radius: 50%;
-            font-weight: 700;
-            font-size: 1.25rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .step-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-        }
-        
-        .step-card p {
-            color: var(--color-gray-600);
-        }
-        
-        /* Features */
-        .features {
-            padding: 5rem 0;
-            background: var(--color-gray-50);
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-        
-        .feature-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            border: 1px solid var(--color-gray-200);
-            transition: all 0.2s;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-            border-color: #8B5CF6;
-        }
-        
-        .feature-icon {
-            width: 3rem;
-            height: 3rem;
-            background: #8B5CF6;
-            color: white;
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .feature-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-        }
-        
-        .feature-card p {
-            color: var(--color-gray-600);
-        }
-        
-        /* Pricing */
-        .pricing {
-            padding: 5rem 0;
-            background: white;
-        }
-        
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-        
-        .pricing-card {
-            background: white;
-            border: 2px solid var(--color-gray-200);
-            border-radius: 1rem;
-            padding: 2.5rem 2rem;
-            position: relative;
-        }
-        
-        .pricing-card.featured {
-            border-color: #8B5CF6;
-            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.2);
-            transform: scale(1.05);
-        }
-        
-        .pricing-badge {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #8B5CF6;
-            color: white;
-            padding: 0.25rem 1rem;
-            border-radius: 1rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-        
-        .pricing-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .price {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--color-gray-900);
-            margin-bottom: 0.5rem;
-        }
-        
-        .price-period {
-            color: var(--color-gray-500);
-            font-size: 1rem;
-        }
-        
-        .features-list {
-            list-style: none;
-            margin: 2rem 0;
-        }
-        
-        .features-list li {
-            padding: 0.5rem 0;
-            display: flex;
-            align-items: start;
-            gap: 0.5rem;
-        }
-        
-        .features-list li::before {
-            content: "✓";
-            color: var(--color-success);
-            font-weight: 700;
-        }
-        
-        /* FAQ */
-        .faq {
-            padding: 5rem 0;
-            background: var(--color-gray-50);
-        }
-        
-        .faq-grid {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .faq-item {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            margin-bottom: 1rem;
-            border: 1px solid var(--color-gray-200);
-        }
-        
-        .faq-question {
-            font-weight: 600;
-            font-size: 1.125rem;
-            margin-bottom: 0.75rem;
-            color: var(--color-gray-900);
-        }
-        
-        .faq-answer {
-            color: var(--color-gray-600);
-        }
-        
-        /* CTA Section */
-        .cta-section {
-            padding: 5rem 0;
-            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
-            color: white;
-            text-align: center;
-        }
-        
-        .cta-section h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: white;
-        }
-        
-        .cta-section p {
-            font-size: 1.25rem;
-            color: #F3E8FF;
-            margin-bottom: 2rem;
-        }
-        
-        /* Footer */
-        .footer {
-            padding: 2rem 0;
-            background: var(--color-gray-900);
-            color: white;
-            text-align: center;
-        }
-        
-        .footer p {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-            
-            .section-header h2 {
-                font-size: 1.75rem;
-            }
-            
-            .steps-grid,
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .pricing-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .pricing-card.featured {
-                transform: scale(1);
-            }
-            
-            .email-form {
-                flex-direction: column;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <a href="#" class="logo">TaxBuddy NG</a>
-                <nav class="nav">
-                    <a href="#how-it-works">How It Works</a>
-                    <a href="#features">Features</a>
-                    <a href="#pricing">Pricing</a>
-                    <a href="#faq">FAQ</a>
-                </nav>
-                <a href="https://ng-tax-hero.lovable.app" target="_blank" class="btn btn-ghost">Sign In</a>
-            </div>
-        </div>
-    </header>
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { 
+  CheckCircle, 
+  Calendar, 
+  FolderOpen, 
+  Calculator,
+  Shield,
+  Bell,
+  UserPlus,
+  ClipboardCheck,
+  Check,
+  Sparkles
+} from 'lucide-react';
+import { Logo } from '@/components/Logo';
+import { WaitlistForm } from '@/components/landing/WaitlistForm';
+import { useFAQ } from '@/hooks/useFAQ';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { QUICK_ACCESS_CONFIG, formatCurrency, type PlanKey } from '@/config/quickAccess';
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <h1>Tax Compliance Made Simple for Nigerians</h1>
-            <p class="hero-subtitle">
-                Track deadlines, manage documents, and calculate taxes — all in one app designed for Nigerian individuals and SMEs.
-            </p>
-            <div class="hero-actions">
-                <a href="https://ng-tax-hero.lovable.app/signup" target="_blank" class="btn btn-primary">
-                    Get Started Free
-                    <i data-lucide="arrow-right" style="width: 1rem; height: 1rem;"></i>
-                </a>
-                <a href="https://ng-tax-hero.lovable.app/calculator" target="_blank" class="btn btn-secondary">
-                    Check Your Readiness
-                </a>
-            </div>
-        </div>
-    </section>
+const STEPS = [
+  { 
+    number: 1, 
+    icon: UserPlus, 
+    title: 'Sign Up Free', 
+    description: 'Create your account in under 2 minutes' 
+  },
+  { 
+    number: 2, 
+    icon: ClipboardCheck, 
+    title: 'Complete Readiness Check', 
+    description: 'Answer questions about your tax situation' 
+  },
+  { 
+    number: 3, 
+    icon: Calendar, 
+    title: 'Set Up Deadlines', 
+    description: 'Import or create tax deadline reminders' 
+  },
+  { 
+    number: 4, 
+    icon: CheckCircle, 
+    title: 'Stay Compliant', 
+    description: 'Get alerts, file on time, avoid penalties' 
+  },
+];
 
-    <!-- Waitlist Section -->
-    <section class="waitlist-section">
-        <div class="container">
-            <div class="waitlist-card">
-                <h2>Join the Waitlist</h2>
-                <p>Be the first to know when new features launch</p>
-                
-                <form class="email-form" onsubmit="event.preventDefault(); alert('Thanks for joining! Check your email soon.');">
-                    <input type="email" class="email-input" placeholder="Enter your email" required>
-                    <button type="submit" class="btn btn-primary">Get Early Access</button>
-                </form>
-                
-                <label class="checkbox-label">
-                    <input type="checkbox" required>
-                    <span>I agree to receive product updates and announcements</span>
-                </label>
-                
-                <p class="privacy-note">
-                    <strong>Privacy:</strong> We only collect your email to notify you about early access. We don't sell your data. You can unsubscribe anytime.
-                </p>
-            </div>
-        </div>
-    </section>
+const features = [
+  {
+    icon: CheckCircle,
+    title: 'TIN Onboarding',
+    description: 'Step-by-step checklist to get your Tax Identification Number',
+  },
+  {
+    icon: Calendar,
+    title: 'Deadline Tracking',
+    description: 'Never miss a VAT, WHT, or income tax deadline again',
+  },
+  {
+    icon: Bell,
+    title: 'Smart Reminders',
+    description: 'Get email alerts before important tax dates',
+  },
+  {
+    icon: Calculator,
+    title: 'Tax Calculators',
+    description: 'VAT, WHT, and income tax calculators with Nigerian rates',
+  },
+  {
+    icon: FolderOpen,
+    title: 'Document Vault',
+    description: 'Securely store and organize all your tax documents',
+  },
+  {
+    icon: Shield,
+    title: 'Secure & Private',
+    description: 'Your data is encrypted and only accessible by you',
+  },
+];
 
-    <!-- How It Works -->
-    <section id="how-it-works" class="how-it-works">
-        <div class="container">
-            <div class="section-header">
-                <h2>How TaxBuddy NG Works</h2>
-                <p>Get started in minutes with our simple 4-step process</p>
-            </div>
-            
-            <div class="steps-grid">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <h3>Sign Up Free</h3>
-                    <p>Create your account in under 2 minutes</p>
-                </div>
-                
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <h3>Complete Readiness Check</h3>
-                    <p>Answer questions about your tax situation</p>
-                </div>
-                
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <h3>Set Up Deadlines</h3>
-                    <p>Import or create tax deadline reminders</p>
-                </div>
-                
-                <div class="step-card">
-                    <div class="step-number">4</div>
-                    <h3>Stay Compliant</h3>
-                    <p>Get alerts, file on time, avoid penalties</p>
-                </div>
-            </div>
-        </div>
-    </section>
+const PLAN_ORDER: PlanKey[] = ['FREE', 'PRO', 'BUSINESS'];
 
-    <!-- Features -->
-    <section id="features" class="features">
-        <div class="container">
-            <div class="section-header">
-                <h2>Features</h2>
-                <p>Everything you need to stay compliant with Nigerian tax laws</p>
-            </div>
-            
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i data-lucide="user-check" style="width: 1.5rem; height: 1.5rem;"></i>
-                    </div>
-                    <h3>TIN Onboarding</h3>
-                    <p>Step-by-step checklist to get your Tax Identification Number</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i data-lucide="calendar" style="width: 1.5rem; height: 1.5rem;"></i>
-                    </div>
-                    <h3>Deadline Tracking</h3>
-                    <p>Never miss a VAT, WHT, or income tax deadline again</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i data-lucide="bell" style="width: 1.5rem; height: 1.5rem;"></i>
-                    </div>
-                    <h3>Smart Reminders</h3>
-                    <p>Get email alerts before important tax dates</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i data-lucide="calculator" style="width: 1.5rem; height: 1.5rem;"></i>
-                    </div>
-                    <h3>Tax Calculators</h3>
-                    <p>VAT, WHT, and income tax calculators with Nigerian rates</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i data-lucide="folder" style="width: 1.5rem; height: 1.5rem;"></i>
-                    </div>
-                    <h3>Document Vault</h3>
-                    <p>Securely store and organize all your tax documents</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i data-lucide="shield" style="width: 1.5rem; height: 1.5rem;"></i>
-                    </div>
-                    <h3>Secure & Private</h3>
-                    <p>Your data is encrypted and only accessible by you</p>
-                </div>
-            </div>
-        </div>
-    </section>
+const PLAN_FEATURES: Record<PlanKey, string[]> = {
+  FREE: [
+    'Dashboard & KPIs',
+    'Basic AI summary',
+    '3 AI explanations/month',
+    'Talk to a Tax Agent',
+  ],
+  PRO: [
+    'Everything in Free',
+    'Full AI explanations',
+    'Daily compliance scan',
+    'Anomaly detection',
+    'Export PDF/ZIP',
+    'Submit remittance',
+  ],
+  BUSINESS: [
+    'Everything in Pro',
+    'Multi-user roles',
+    'Audit pack export',
+    'Rule management',
+    'Approval workflows',
+  ],
+};
 
-    <!-- Pricing -->
-    <section id="pricing" class="pricing">
-        <div class="container">
-            <div class="section-header">
-                <h2>Simple, Transparent Pricing</h2>
-                <p>Start free and upgrade as you grow. No hidden fees.</p>
-            </div>
-            
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <h3>Free</h3>
-                    <div class="price">Free</div>
-                    
-                    <ul class="features-list">
-                        <li>Dashboard & KPIs</li>
-                        <li>Basic AI summary</li>
-                        <li>3 AI explanations/month</li>
-                        <li>Talk to a Tax Agent</li>
-                    </ul>
-                    
-                    <a href="https://ng-tax-hero.lovable.app/signup" target="_blank" class="btn btn-secondary" style="width: 100%;">Get Started</a>
-                </div>
-                
-                <div class="pricing-card featured">
-                    <div class="pricing-badge">Most Popular</div>
-                    <h3>Pro</h3>
-                    <div class="price">₦3,000<span class="price-period">/month</span></div>
-                    
-                    <ul class="features-list">
-                        <li>Everything in Free</li>
-                        <li>Full AI explanations</li>
-                        <li>Daily compliance scan</li>
-                        <li>Anomaly detection</li>
-                        <li>Export PDF/ZIP</li>
-                        <li>Submit remittance</li>
-                    </ul>
-                    
-                    <a href="https://ng-tax-hero.lovable.app/pricing" target="_blank" class="btn btn-primary" style="width: 100%;">Upgrade to Pro</a>
-                </div>
-                
-                <div class="pricing-card">
-                    <h3>Business</h3>
-                    <div class="price">₦15,000<span class="price-period">/month</span></div>
-                    
-                    <ul class="features-list">
-                        <li>Everything in Pro</li>
-                        <li>Multi-user roles</li>
-                        <li>Audit pack export</li>
-                        <li>Rule management</li>
-                        <li>Approval workflows</li>
-                    </ul>
-                    
-                    <a href="https://ng-tax-hero.lovable.app/pricing" target="_blank" class="btn btn-secondary" style="width: 100%;">Upgrade to Business</a>
-                </div>
-            </div>
-            
-            <p style="text-align: center; margin-top: 2rem; color: var(--color-gray-600);">
-                Need a custom plan? <a href="#" style="color: #8B5CF6; text-decoration: underline;">Contact us</a>
-            </p>
-        </div>
-    </section>
+export default function Landing() {
+  const { faqItems, isLoading: faqLoading } = useFAQ();
+  const topFAQs = faqItems?.slice(0, 5) || [];
 
-    <!-- FAQ -->
-    <section id="faq" class="faq">
-        <div class="container">
-            <div class="section-header">
-                <h2>Frequently Asked Questions</h2>
-                <p>Got questions? We've got answers.</p>
-            </div>
-            
-            <div class="faq-grid">
-                <div class="faq-item">
-                    <div class="faq-question">What is Tax Buddy?</div>
-                    <div class="faq-answer">TaxBuddy NG is a tax compliance platform designed specifically for Nigerian individuals and SMEs. We help you track deadlines, calculate taxes, and stay compliant with FIRS requirements.</div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">Who is Tax Buddy for?</div>
-                    <div class="faq-answer">TaxBuddy NG is for Nigerian salary earners, freelancers, contractors, and SMEs who need to manage PAYE, VAT, WHT, and PIT compliance obligations.</div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">Is Tax Buddy a government platform?</div>
-                    <div class="faq-answer">No. TaxBuddy NG is not affiliated with FIRS or any Nigerian tax authority. We provide informational support and workflow tools, not legal or tax advice.</div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">What can I do with Tax Buddy?</div>
-                    <div class="faq-answer">Track tax deadlines, calculate PAYE/VAT/WHT, organize documents, get compliance reminders, and access AI-powered tax explanations tailored to Nigerian tax laws.</div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">What is the "Quick Access" feature?</div>
-                    <div class="faq-answer">Quick Access provides instant links to your most-used tax tools and calculators, making it faster to complete common tasks like PAYE calculations and deadline checks.</div>
-                </div>
-            </div>
-            
-            <p style="text-align: center; margin-top: 2rem;">
-                <a href="#" style="color: #8B5CF6; text-decoration: underline; font-weight: 600;">See All FAQs →</a>
-            </p>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="container">
-            <h2>Ready to simplify your taxes?</h2>
-            <p>Join thousands of Nigerians who trust TaxBuddy NG</p>
-            <a href="https://ng-tax-hero.lovable.app/signup" target="_blank" class="btn btn-primary" style="background: white; color: #8B5CF6;">
-                Create Free Account
-                <i data-lucide="arrow-right" style="width: 1rem; height: 1rem;"></i>
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Navigation */}
+      <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+          <Link to="/" className="flex items-center">
+            <Logo variant="full" size="lg" />
+          </Link>
+          <div className="hidden items-center gap-6 md:flex">
+            <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              How It Works
             </a>
+            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Features
+            </a>
+            <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Pricing
+            </a>
+            <Link to="/more/calculators" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Calculators
+            </Link>
+            <Link to="/learn" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Learning
+            </Link>
+            <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              FAQ
+            </a>
+          </div>
+          <Link to="/auth">
+            <Button variant="outline" size="sm">Sign In</Button>
+          </Link>
         </div>
-    </section>
+      </nav>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>© 2025 TaxBuddy NG. All rights reserved.</p>
+      {/* Hero Section */}
+      <header className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/20" />
+        <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-8">
+            <div className="flex flex-col justify-center">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+                Tax Compliance Made Simple for Nigerians
+              </h2>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Track deadlines, manage documents, and calculate taxes — all in one app designed for Nigerian individuals and SMEs.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Link to="/auth?mode=signup">
+                  <Button size="lg" className="w-full sm:w-auto">
+                    Get Started Free
+                  </Button>
+                </Link>
+                <Link to="/readiness">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                    Check Your Readiness
+                  </Button>
+                </Link>
+              </div>
+            </div>
+            <div className="flex items-center justify-center">
+              <div className="w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-lg">
+                <div className="mb-4 flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  <h3 className="font-semibold">Join the Waitlist</h3>
+                </div>
+                <p className="mb-4 text-sm text-muted-foreground">
+                  Be the first to know when new features launch
+                </p>
+                <WaitlistForm />
+              </div>
+            </div>
+          </div>
         </div>
-    </footer>
+      </header>
 
-    <script>
-        lucide.createIcons();
-    </script>
-</body>
-</html>
+      {/* How It Works Section */}
+      <section id="how-it-works" className="border-t border-border bg-muted/30 px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <h3 className="mb-4 text-center text-2xl font-bold sm:text-3xl">
+            How TaxBuddy NG Works
+          </h3>
+          <p className="mx-auto mb-12 max-w-2xl text-center text-muted-foreground">
+            Get started in minutes with our simple 4-step process
+          </p>
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {STEPS.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <div key={step.number} className="relative flex flex-col items-center text-center">
+                  {/* Connector line */}
+                  {index < STEPS.length - 1 && (
+                    <div className="absolute left-1/2 top-8 hidden h-0.5 w-full bg-border lg:block" />
+                  )}
+                  <div className="relative z-10 mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
+                    <Icon className="h-8 w-8" />
+                  </div>
+                  <span className="mb-2 text-sm font-medium text-primary">Step {step.number}</span>
+                  <h4 className="mb-2 font-semibold">{step.title}</h4>
+                  <p className="text-sm text-muted-foreground">{step.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="border-t border-border px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <h3 className="mb-4 text-center text-2xl font-bold sm:text-3xl">
+            Features
+          </h3>
+          <p className="mx-auto mb-12 max-w-2xl text-center text-muted-foreground">
+            Everything you need to stay compliant with Nigerian tax laws
+          </p>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <div
+                  key={feature.title}
+                  className="rounded-lg border border-border bg-card p-6 transition-shadow hover:shadow-md"
+                >
+                  <div className="mb-3 inline-flex rounded-lg bg-primary/10 p-2">
+                    <Icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <h4 className="mb-2 font-semibold">{feature.title}</h4>
+                  <p className="text-sm text-muted-foreground">{feature.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="border-t border-border bg-muted/30 px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <h3 className="mb-4 text-center text-2xl font-bold sm:text-3xl">
+            Simple, Transparent Pricing
+          </h3>
+          <p className="mx-auto mb-12 max-w-2xl text-center text-muted-foreground">
+            Start free and upgrade as you grow. No hidden fees.
+          </p>
+          <div className="grid gap-6 md:grid-cols-3">
+            {PLAN_ORDER.map((planKey) => {
+              const plan = QUICK_ACCESS_CONFIG.plans[planKey];
+              const isPro = planKey === 'PRO';
+              return (
+                <div
+                  key={planKey}
+                  className={`relative rounded-xl border bg-card p-6 ${
+                    isPro ? 'border-primary shadow-lg ring-2 ring-primary/20' : 'border-border'
+                  }`}
+                >
+                  {isPro && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                      <span className="rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
+                        Most Popular
+                      </span>
+                    </div>
+                  )}
+                  <div className="mb-4">
+                    <h4 className="text-xl font-bold">{plan.label}</h4>
+                    <div className="mt-2">
+                      {'price' in plan && plan.price ? (
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-3xl font-bold">{formatCurrency(plan.price.amount)}</span>
+                          <span className="text-muted-foreground">/month</span>
+                        </div>
+                      ) : (
+                        <span className="text-3xl font-bold">Free</span>
+                      )}
+                    </div>
+                  </div>
+                  <ul className="mb-6 space-y-3">
+                    {PLAN_FEATURES[planKey].map((feature) => (
+                      <li key={feature} className="flex items-start gap-2 text-sm">
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link to="/auth?mode=signup" className="block">
+                    <Button 
+                      className="w-full" 
+                      variant={isPro ? 'default' : 'outline'}
+                    >
+                      {planKey === 'FREE' ? 'Get Started' : `Upgrade to ${plan.label}`}
+                    </Button>
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+          <p className="mt-8 text-center text-sm text-muted-foreground">
+            Need a custom plan?{' '}
+            <Link to="/auth" className="text-primary hover:underline">
+              Contact us
+            </Link>
+          </p>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="border-t border-border px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl">
+          <h3 className="mb-4 text-center text-2xl font-bold sm:text-3xl">
+            Frequently Asked Questions
+          </h3>
+          <p className="mx-auto mb-12 max-w-2xl text-center text-muted-foreground">
+            Got questions? We've got answers.
+          </p>
+          {faqLoading ? (
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-16 animate-pulse rounded-lg bg-muted" />
+              ))}
+            </div>
+          ) : topFAQs.length > 0 ? (
+            <Accordion type="single" collapsible className="w-full">
+              {topFAQs.map((item) => (
+                <AccordionItem key={item.id} value={item.id}>
+                  <AccordionTrigger className="text-left">
+                    {item.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    {item.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          ) : (
+            <p className="text-center text-muted-foreground">
+              FAQs coming soon!
+            </p>
+          )}
+          <div className="mt-8 text-center">
+            <Link to="/more/faq">
+              <Button variant="outline">See All FAQs</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="border-t border-border bg-primary/5 px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-lg text-center">
+          <h3 className="text-xl font-bold">Ready to simplify your taxes?</h3>
+          <p className="mt-2 text-muted-foreground">
+            Join thousands of Nigerians who trust TaxBuddy NG
+          </p>
+          <Link to="/auth?mode=signup" className="mt-6 inline-block">
+            <Button size="lg">Create Free Account</Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border px-4 py-6 text-center text-sm text-muted-foreground">
+        <p>© 2025 TaxBuddy NG. All rights reserved.</p>
+      </footer>
+    </div>
+  );
+}
